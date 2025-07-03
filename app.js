@@ -1247,7 +1247,7 @@ function initializeWeightCalculator(weightSelector) {
       } catch (e) {
         console.warn("Could not set selection range:", e);
       }
-    }, 0);
+    }, 50);
   };
 
   const exitEditMode = () => {
@@ -1439,19 +1439,29 @@ function initializeModalCalculator(container, product, pricePerGram) {
       const currentValue = displaySpan.textContent.replace(/\D/g, "");
       if (currentValue) realInput.value = currentValue;
       setTimeout(() => {
-        realInput.focus();
-      }, 0);
+        try {
+          realInput.focus();
+          if (realInput.value && realInput.setSelectionRange) {
+            realInput.setSelectionRange(realInput.value.length, realInput.value.length);
+          }
+        } catch (err) {
+          console.warn("Could not focus or set selection on modal input:", err);
+        }
+      }, 50);
     });
 
     realInput.addEventListener("input", function () {
       let value = this.value.replace(/\D/g, "");
       let numericValue = parseInt(value) || 0;
+
       if (numericValue > 1000) {
+        numericValue = 1000;
         value = "1000";
         this.value = value;
       } else {
         this.value = value;
       }
+
       updateDetailedPrice();
     });
 
