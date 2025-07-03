@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Чай от Лебедика — Настоящий китайский чай, отобранный вручную для ценителей</title>
+    <meta
+      name="description"
+      content="Настоящий китайский чай, отобранный вручную для ценителей. Павел Лебедик — ваш проводник в мир премиального чая."
+    />
+    <link rel="icon" type="image/x-icon" href="public/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="public/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <section id="hero" class="hero">
+      <div class="hero-background"></div>
+      <div class="hero-content">
+        <h1 class="hero-title">Чай от Лебедика</h1>
+        <p class="hero-subtitle">Настоящий китайский чай, отобранный вручную для ценителей</p>
+        <button class="cta-button" id="hero-cta-button" onclick="scrollToSection('calculator')">Выбрать свой чай</button>
+      </div>
+    </section>
+    <section id="about" class="about">
+      <div class="container">
+        <div class="about-content">
+          <div class="about-text">
+            <h2 class="section-title">Человек за чашкой чая</h2>
+            <div class="about-story">
+              <p>
+                Меня зовут Павел Лебедик, и я влюбился в китайский чай не сразу. Сначала было любопытство — как это, когда один и тот же
+                лист может давать совершенно разные вкусы в зависимости от того, как с ним обращаться?
+              </p>
+              <p>
+                Потом были поездки в Китай, долгие разговоры с фермерами, дегустации в чайных домах Фуцзяни. Я понял: чай — это не просто
+                напиток. Это философия, медитация, способ замедлиться в нашем бешеном мире.
+              </p>
+              <p>
+                Сейчас я выбираю каждый сорт лично, работаю напрямую с производителями. Никаких посредников, никакой пыли в пакетиках.
+                Только то, за что я готов поручиться своим именем.
+              </p>
+            </div>
+          </div>
+          <div class="about-image">
+            <img id="pasha-photo" alt="Павел Лебедик" class="pasha-photo" />
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="calculator" class="calculator">
+      <div class="container"></div>
+    </section>
+    <section id="final-cta" class="final-cta">
+      <div class="container">
+        <div class="final-cta-content">
+          <h2 class="section-title">Готов попробовать?</h2>
+          <p class="final-cta-text">Напиши мне в Telegram, чтобы сделать заказ или просто задать вопрос. Отвечаю лично.</p>
+          <a href="#" id="telegram-main-button" target="_blank" class="telegram-button">
+            <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0C5.374 0 0 5.374 0 12s5.374 12 12 12 12-5.374 12-12S18.626 0 12 0zm5.568 8.16l-1.85 8.728c-.139.623-.505.779-1.024.484l-2.831-2.087-1.364 1.314c-.15.15-.278.278-.57.278l.204-2.887 5.24-4.73c.227-.203-.05-.315-.353-.112L9.727 13.14l-2.85-.892c-.62-.194-.632-.62.128-.918l11.13-4.288c.517-.194.97.112.803.918z"
+              />
+            </svg>
+            <span>Написать Павлу в Telegram</span>
+          </a>
+        </div>
+      </div>
+    </section>
+    <div id="product-modal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <div class="modal-body">
+          <div class="modal-images">
+            <div class="modal-main-image-wrapper">
+              <img id="modal-main-image" src="" alt="" class="modal-main-img" />
+              <button class="modal-img-nav prev hidden" id="modal-img-prev">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                </svg>
+              </button>
+              <button class="modal-img-nav next hidden" id="modal-img-next">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                </svg>
+              </button>
+              <div class="modal-img-counter hidden" id="modal-img-counter">
+                <span id="modal-img-current">1</span> из <span id="modal-img-total">1</span>
+              </div>
+            </div>
+            <div class="modal-gallery"></div>
+          </div>
+          <div class="modal-info">
+            <h3 id="modal-title" class="modal-title"></h3>
+            <p id="modal-price" class="modal-price"></p>
+            <div id="modal-description" class="modal-description"></div>
+            <div id="modal-brewing-tips" class="modal-brewing-tips"></div>
+            <div id="modal-effects" class="modal-effects"></div>
+            <div id="modal-story" class="modal-story"></div>
+            <a href="#" target="_blank" id="modal-order-button" class="modal-order-button"> Заказать этот чай </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="config.js"></script>
+    <script src="products/config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
