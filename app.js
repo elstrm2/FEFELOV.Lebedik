@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initializeApp();
 });
 
-cookies;
 function setCookie(name, value, days = 30) {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
@@ -1344,6 +1343,8 @@ function initializeModalCalculator(container, product, pricePerGram) {
   const breakdownGrindingEl = document.getElementById("price-breakdown-grinding");
   const breakdownGrindingCostEl = document.getElementById("price-breakdown-grinding-cost");
   const finalPriceEl = document.getElementById("modal-final-price");
+  const packagingButtons = container.querySelectorAll('.calc-option-btn[data-type="packaging"]');
+  const grindingButtons = container.querySelectorAll('.calc-option-btn[data-type="grinding"]');
 
   const updateDetailedPrice = () => {
     let selectedWeight = 0;

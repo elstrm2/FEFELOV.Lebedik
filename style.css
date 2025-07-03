@@ -29,6 +29,9 @@ select,
 textarea {
   font-family: var(--font-sans);
   font-size: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  caret-color: var(--white);
 }
 
 html {
