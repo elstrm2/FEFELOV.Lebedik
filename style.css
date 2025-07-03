@@ -970,6 +970,7 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
+  color: var(--text-color);
 }
 
 .quiz-option:hover,
@@ -1300,6 +1301,22 @@ body {
   background-color: #3a5a40;
   color: white;
   border-color: #3a5a40;
+}
+
+@media (hover: hover) {
+  .weight-input:not(.active):hover {
+    border-color: var(--accent-color);
+    background-color: var(--accent-color);
+    color: white;
+  }
+  .weight-input:not(.active):hover .weight-display {
+    color: white;
+  }
+  .weight-option:not(.active):hover {
+    background-color: #3a5a40;
+    color: white;
+    border-color: #3a5a40;
+  }
 }
 
 .calculated-price {
