@@ -841,6 +841,7 @@ body {
   cursor: pointer;
   text-align: center;
   transition: all 0.3s;
+  color: var(--text-color);
 }
 
 .calc-option-btn:hover,
@@ -1148,7 +1149,7 @@ body {
   font-family: var(--font-sans);
   cursor: pointer;
   transition: all 0.3s;
-  color: var(--text-color) !important;
+  color: var(--text-color);
 }
 
 .filter-button:hover,
