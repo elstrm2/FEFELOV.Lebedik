@@ -1152,11 +1152,18 @@ body {
   color: var(--text-color);
 }
 
-.filter-button:hover,
 .filter-button.active {
   background-color: #3a5a40;
   color: white;
   border-color: #3a5a40;
+}
+
+@media (hover: hover) {
+  .filter-button:not(.active):hover {
+    background-color: #3a5a40;
+    color: white;
+    border-color: #3a5a40;
+  }
 }
 
 .cost-calculator {
@@ -1230,7 +1237,8 @@ body {
 }
 
 .weight-input.editable .weight-real-input {
-  display: block;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .weight-display {
@@ -1249,7 +1257,11 @@ body {
 }
 
 .weight-real-input {
-  display: none;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border: none;

@@ -554,13 +554,15 @@ function openProductModal(product) {
   const baseWeight = product.weight;
   const pricePerGram = basePrice / baseWeight;
 
+  const weightOptions = [50, 100, 200, 500];
+  const weightOptionsHtml = weightOptions
+    .map((w) => `<div class="weight-option ${w === baseWeight ? "active" : ""}" data-weight="${w}">${w}г</div>`)
+    .join("");
+
   calcContainer.innerHTML = `
     <p class="calculator-title">Рассчитать стоимость:</p>
     <div class="weight-selector" data-product-id="${product.id}">
-        <div class="weight-option" data-weight="50">50г</div>
-        <div class="weight-option active" data-weight="100">100г</div>
-        <div class="weight-option" data-weight="200">200г</div>
-        <div class="weight-option" data-weight="500">500г</div>
+        ${weightOptionsHtml}
         <div class="weight-custom">
             <div class="weight-input" data-placeholder="Свой вес, г">
                 <span class="weight-display">Свой вес, г</span>
@@ -587,13 +589,13 @@ function openProductModal(product) {
     </div>
 
     <div class="modal-price-breakdown">
-        <p>Вес: <span id="price-breakdown-weight">100г</span> + <span id="price-breakdown-weight-cost">...</span></p>
+        <p>Вес: <span id="price-breakdown-weight">${baseWeight}г</span> + <span id="price-breakdown-weight-cost">...</span></p>
         <p>Упаковка: <span id="price-breakdown-packaging">Стандартная</span> + <span id="price-breakdown-packaging-cost">0 ₽</span></p>
         <p>Помол: <span id="price-breakdown-grinding">Цельный лист</span> + <span id="price-breakdown-grinding-cost">0 ₽</span></p>
     </div>
 
     <div class="modal-total-price">
-        Итого: <span id="modal-final-price">${formatPrice(100 * pricePerGram)}</span>
+        Итого: <span id="modal-final-price">${formatPrice(basePrice)}</span>
     </div>
   `;
 
@@ -1125,6 +1127,11 @@ function createRecommendedCard(product, selectedEffect = null) {
   const baseWeight = product.weight;
   const pricePerGram = basePrice / baseWeight;
 
+  const weightOptions = [50, 100, 200, 500];
+  const weightOptionsHtml = weightOptions
+    .map((w) => `<div class="weight-option ${w === baseWeight ? "active" : ""}" data-weight="${w}">${w}г</div>`)
+    .join("");
+
   card.innerHTML = `
         <div class="product-image-container" onclick="openProductModal(teaProducts.find(p => p.id === '${product.id}'))">
             ${imageElement}
@@ -1137,10 +1144,7 @@ function createRecommendedCard(product, selectedEffect = null) {
             <div class="cost-calculator">
                 <p class="calculator-title">Рассчитать стоимость:</p>
                 <div class="weight-selector" data-product-id="${product.id}">
-                    <div class="weight-option active" data-weight="50">50г</div>
-                    <div class="weight-option" data-weight="100">100г</div>
-                    <div class="weight-option" data-weight="200">200г</div>
-                    <div class="weight-option" data-weight="500">500г</div>
+                    ${weightOptionsHtml}
                     <div class="weight-custom">
                         <div class="weight-input" data-placeholder="Свой вес, г">
                             <span class="weight-display">Свой вес, г</span>
@@ -1149,7 +1153,7 @@ function createRecommendedCard(product, selectedEffect = null) {
                     </div>
                 </div>
                 <div class="calculated-price" data-price-per-gram="${pricePerGram}">
-                    ${formatPrice(50 * pricePerGram)}
+                    ${formatPrice(basePrice)}
                 </div>
             </div>
             
@@ -1187,6 +1191,8 @@ function initializeWeightCalculator(weightSelector) {
     return;
   }
 
+  const initialActiveOption = weightSelector.querySelector(".weight-option.active");
+  const defaultWeight = initialActiveOption ? parseInt(initialActiveOption.dataset.weight) : 50;
   const weightOptions = weightSelector.querySelectorAll(".weight-option");
   const priceElement = weightSelector.parentElement?.querySelector(".calculated-price");
 
@@ -1259,7 +1265,13 @@ function initializeWeightCalculator(weightSelector) {
     updatePrice(value);
 
     if (value === 0) {
+      updateDisplay("");
       customWeightButton.classList.remove("active");
+      const defaultOption = weightSelector.querySelector(`.weight-option[data-weight="${defaultWeight}"]`);
+      if (defaultOption) {
+        defaultOption.classList.add("active");
+      }
+      updatePrice(defaultWeight);
     }
   };
 
@@ -1336,6 +1348,12 @@ function initializeWeightCalculator(weightSelector) {
 
 function initializeModalCalculator(container, product, pricePerGram) {
   const weightSelector = container.querySelector(".weight-selector");
+  if (!weightSelector) {
+    console.warn("Weight selector not found");
+    return;
+  }
+  const initialActiveOption = weightSelector.querySelector(".weight-option.active");
+  const defaultWeight = initialActiveOption ? parseInt(initialActiveOption.dataset.weight) : 50;
   const breakdownWeightEl = document.getElementById("price-breakdown-weight");
   const breakdownWeightCostEl = document.getElementById("price-breakdown-weight-cost");
   const breakdownPackagingEl = document.getElementById("price-breakdown-packaging");
@@ -1410,8 +1428,14 @@ function initializeModalCalculator(container, product, pricePerGram) {
     customWeightButton.classList.remove("editable");
     const value = parseInt(realInput.value) || 0;
     updateDisplay(value > 0 ? value.toString() : "");
+
     if (value === 0) {
       customWeightButton.classList.remove("active");
+      const defaultOption = weightSelector.querySelector(`.weight-option[data-weight="${defaultWeight}"]`);
+      if (defaultOption) {
+        weightSelector.querySelectorAll(".weight-option").forEach((opt) => opt.classList.remove("active"));
+        defaultOption.classList.add("active");
+      }
     }
     updateDetailedPrice();
   };
