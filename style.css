@@ -562,7 +562,7 @@ body {
 
 .modal-body {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr);
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr);
   gap: 40px;
   padding: 30px;
   overflow-wrap: break-word;
@@ -574,6 +574,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  order: 2;
 }
 
 .modal-main-image-wrapper {
@@ -706,6 +707,7 @@ body {
   gap: 20px;
   max-width: 100%;
   overflow: hidden;
+  order: 1;
 }
 
 .modal-title {
@@ -1386,6 +1388,11 @@ body {
   .modal-body {
     grid-template-columns: 1fr;
     gap: 30px;
+  }
+
+  .modal-info,
+  .modal-images {
+    order: initial;
   }
 
   .modal-main-img {
