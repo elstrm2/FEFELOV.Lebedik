@@ -110,7 +110,7 @@ function initializeCalculator() {
   calculatorSection.innerHTML = `
     <div class="container">
       <h2 class="section-title">Подберем чай под ваше настроение</h2>
-      
+
       <div class="quiz-container">
         <div class="quiz-step active" id="step-mood">
           <h3 class="quiz-question">Какое у вас настроение?</h3>
@@ -121,7 +121,7 @@ function initializeCalculator() {
           </div>
           <button class="quiz-skip" data-action="skip-all">Пропустить опрос</button>
         </div>
-        
+
         <div class="quiz-step" id="step-time">
           <h3 class="quiz-question">В какое время дня будете пить?</h3>
           <div class="quiz-options">
@@ -134,7 +134,7 @@ function initializeCalculator() {
             <button class="quiz-skip" data-action="skip-question">Пропустить вопрос</button>
           </div>
         </div>
-        
+
         <div class="quiz-step" id="step-taste">
           <h3 class="quiz-question">Какой вкус предпочитаете?</h3>
           <div class="quiz-options">
@@ -149,7 +149,7 @@ function initializeCalculator() {
           </div>
         </div>
       </div>
-      
+
       <div class="filter-panel">
         <h3>Фильтры</h3>
         <div class="filter-options">
@@ -180,7 +180,7 @@ function initializeCalculator() {
           </div>
         </div>
       </div>
-      
+
       <div id="recommendations" class="recommendations"></div>
     </div>
   `;
@@ -570,7 +570,7 @@ function openProductModal(product) {
             </div>
         </div>
     </div>
-    
+
     <div class="calculator-options">
         <div class="calc-option-group">
             <label>Упаковка:</label>
@@ -586,12 +586,34 @@ function openProductModal(product) {
                 <button class="calc-option-btn" data-type="grinding" data-value="ground" data-price="50">Помол (+50 ₽)</button>
             </div>
         </div>
+        <div class="calc-option-group">
+            <label>Добавки (можно выбрать несколько):</label>
+            <div class="calc-option-buttons">
+                <button class="calc-option-btn" data-type="addon" data-value="honey" data-price="80">Мёд (+80 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="ginger" data-price="40">Имбирь (+40 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="lemon" data-price="30">Лимон (+30 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="mint" data-price="50">Мята (+50 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="thyme" data-price="50">Чабрец (+50 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="cinnamon" data-price="40">Корица (+40 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="clove" data-price="40">Гвоздика (+40 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="cardamom" data-price="60">Кардамон (+60 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="star_anise" data-price="60">Бадьян (+60 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="goji" data-price="100">Ягоды Годжи (+100 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="rosehip" data-price="70">Шиповник (+70 ₽)</button>
+                <button class="calc-option-btn" data-type="addon" data-value="chamomile" data-price="50">Ромашка (+50 ₽)</button>
+            </div>
+        </div>
+        <div class="calc-option-group">
+            <label for="custom-comment">Если не нашли нужную добавку, напишите нам:</label>
+            <textarea id="custom-comment" class="custom-comment-input" placeholder="Например: хочу добавить в чай корень женьшеня..." style="width: 100%; min-height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #e5e5e5; font-family: var(--font-sans);"></textarea>
+        </div>
     </div>
 
     <div class="modal-price-breakdown">
         <p>Вес: <span id="price-breakdown-weight">${baseWeight}г</span> + <span id="price-breakdown-weight-cost">...</span></p>
         <p>Упаковка: <span id="price-breakdown-packaging">Стандартная</span> + <span id="price-breakdown-packaging-cost">0 ₽</span></p>
         <p>Помол: <span id="price-breakdown-grinding">Цельный лист</span> + <span id="price-breakdown-grinding-cost">0 ₽</span></p>
+        <div id="price-breakdown-addons"></div>
     </div>
 
     <div class="modal-total-price">
@@ -818,7 +840,7 @@ function getCalculatorData(product, specificContainer = null) {
   }
 
   let selectedWeight = null;
-  let options = null;
+  let options = {};
   let finalPrice = product ? `${product.priceNumber} ₽ за ${product.weight}г` : null;
 
   if (calcContainer) {
@@ -857,15 +879,20 @@ function getCalculatorData(product, specificContainer = null) {
     if (isModalCalculator) {
       const packagingElement = calcContainer.querySelector('.calc-option-btn[data-type="packaging"].active');
       const grindingElement = calcContainer.querySelector('.calc-option-btn[data-type="grinding"].active');
+      const addonElements = calcContainer.querySelectorAll('.calc-option-btn[data-type="addon"].active');
+      const customCommentElement = calcContainer.querySelector("#custom-comment");
 
       const packaging = packagingElement?.textContent.split("(")[0].trim();
-      const grinding = grindingElement?.textContent.split("(")[0].trim();
+      if (packaging) options.packaging = packaging;
 
-      if (packaging || grinding) {
-        options = {};
-        if (packaging) options.packaging = packaging;
-        if (grinding) options.grinding = grinding;
-      }
+      const grinding = grindingElement?.textContent.split("(")[0].trim();
+      if (grinding) options.grinding = grinding;
+
+      const addons = [...addonElements].map((el) => el.textContent.split("(")[0].trim());
+      if (addons.length > 0) options.addons = addons;
+
+      const customComment = customCommentElement?.value.trim();
+      if (customComment) options.customComment = customComment;
 
       const priceElement = document.getElementById("modal-final-price");
       if (priceElement && priceElement.textContent.trim()) {
@@ -997,9 +1024,16 @@ function createRecommendationMessage(productName, productPrice, productDescripti
     }
     if (options?.packaging) optionsList.push(`Упаковка: ${options.packaging}`);
     if (options?.grinding) optionsList.push(`Помол: ${options.grinding}`);
+    if (options?.addons && options.addons.length > 0) {
+      optionsList.push(`Добавки: ${options.addons.join(", ")}`);
+    }
 
     if (optionsList.length > 0) {
-      message += ` - ${optionsList.join(", ")}\n`;
+      message += ` - ${optionsList.join("\n - ")}\n`;
+    }
+
+    if (options?.customComment) {
+      message += `\n📝 Комментарий: ${options.customComment}\n`;
     }
   }
 
@@ -1140,7 +1174,7 @@ function createRecommendedCard(product, selectedEffect = null) {
             <h4 class="product-title">${product.name}</h4>
             <p class="product-price">${product.priceNumber} ₽ за ${product.weight}г</p>
             <p class="product-description">${product.shortDescription}</p>
-            
+
             <div class="cost-calculator">
                 <p class="calculator-title">Рассчитать стоимость:</p>
                 <div class="weight-selector" data-product-id="${product.id}">
@@ -1156,7 +1190,7 @@ function createRecommendedCard(product, selectedEffect = null) {
                     ${formatPrice(basePrice)}
                 </div>
             </div>
-            
+
             <div class="recommended-actions">
                 <button class="recommended-details-btn" onclick="openProductModal(teaProducts.find(p => p.id === '${product.id}'))">
                     Подробнее
@@ -1384,8 +1418,24 @@ function initializeModalCalculator(container, product, pricePerGram) {
     const grindingCost = activeGrindingBtn ? parseFloat(activeGrindingBtn.dataset.price) : 0;
     const grindingName = activeGrindingBtn ? activeGrindingBtn.textContent.split("(")[0].trim() : "Цельный лист";
 
+    const activeAddonBtns = container.querySelectorAll('.calc-option-btn[data-type="addon"].active');
+    let addonsCost = 0;
+    const addonsBreakdownEl = document.getElementById("price-breakdown-addons");
+    if (addonsBreakdownEl) addonsBreakdownEl.innerHTML = "";
+
+    activeAddonBtns.forEach((btn) => {
+      const addonPrice = parseFloat(btn.dataset.price) || 0;
+      addonsCost += addonPrice;
+      const addonName = btn.textContent.split("(")[0].trim();
+      if (addonsBreakdownEl) {
+        const p = document.createElement("p");
+        p.innerHTML = `<span>Добавка:</span> <span>${addonName}</span> <span></span> <span>${formatPrice(addonPrice)}</span>`;
+        addonsBreakdownEl.appendChild(p);
+      }
+    });
+
     const weightCost = selectedWeight * pricePerGram;
-    const totalCost = weightCost + packagingCost + grindingCost;
+    const totalCost = weightCost + packagingCost + grindingCost + addonsCost;
 
     if (breakdownWeightEl) breakdownWeightEl.textContent = `${selectedWeight}г`;
     if (breakdownWeightCostEl) breakdownWeightCostEl.textContent = formatPrice(weightCost);
@@ -1404,6 +1454,14 @@ function initializeModalCalculator(container, product, pricePerGram) {
       const type = this.dataset.type;
       container.querySelectorAll(`.calc-option-btn[data-type="${type}"]`).forEach((btn) => btn.classList.remove("active"));
       this.classList.add("active");
+      updateDetailedPrice();
+    });
+  });
+
+  const addonButtons = container.querySelectorAll('.calc-option-btn[data-type="addon"]');
+  addonButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      this.classList.toggle("active");
       updateDetailedPrice();
     });
   });
@@ -1527,7 +1585,7 @@ function showQuizCompletedState(quizState) {
           <button class="quiz-dismiss-btn" onclick="dismissQuizNotification()">Спасибо, я сам!</button>
         </div>
       </div>
-      
+
       <div class="filter-panel active">
         <h3>Фильтры</h3>
         <div class="filter-options">
@@ -1558,7 +1616,7 @@ function showQuizCompletedState(quizState) {
           </div>
         </div>
       </div>
-      
+
       <div id="recommendations" class="recommendations"></div>
     </div>
   `;
@@ -1595,7 +1653,7 @@ function showQuizInProgressState(quizState) {
           <button class="quiz-dismiss-btn" onclick="dismissAndSkipQuiz()">Спасибо, я сам!</button>
         </div>
       </div>
-      
+
       <div class="filter-panel active">
         <h3>Фильтры</h3>
         <div class="filter-options">
@@ -1626,7 +1684,7 @@ function showQuizInProgressState(quizState) {
           </div>
         </div>
       </div>
-      
+
       <div id="recommendations" class="recommendations"></div>
     </div>
   `;
@@ -1695,7 +1753,7 @@ function createFullQuizStructure() {
           </div>
           <button class="quiz-skip" data-action="skip-all">Пропустить опрос</button>
         </div>
-        
+
         <div class="quiz-step" id="step-time">
           <h3 class="quiz-question">В какое время дня будете пить?</h3>
           <div class="quiz-options">
@@ -1708,7 +1766,7 @@ function createFullQuizStructure() {
             <button class="quiz-skip" data-action="skip-question">Пропустить вопрос</button>
           </div>
         </div>
-        
+
         <div class="quiz-step" id="step-taste">
           <h3 class="quiz-question">Какой вкус предпочитаете?</h3>
           <div class="quiz-options">
@@ -1723,7 +1781,7 @@ function createFullQuizStructure() {
           </div>
         </div>
       </div>
-      
+
       <div class="filter-panel">
         <h3>Фильтры</h3>
         <div class="filter-options">
@@ -1754,7 +1812,7 @@ function createFullQuizStructure() {
           </div>
         </div>
       </div>
-      
+
       <div id="recommendations" class="recommendations"></div>
     </div>
   `;
